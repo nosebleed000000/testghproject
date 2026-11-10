@@ -1,0 +1,107 @@
+/* ============================================================
+   GaragePro — responsive
+   Порядок: от широких экранов к телефонам.
+   ============================================================ */
+
+/* --- плавное сужение шапки --- */
+@media (max-width:1320px){.topsearch{width:200px}}
+@media (max-width:1280px){.views a span{display:none}}
+@media (max-width:1240px){.topnav a:nth-child(n+4){display:none}.wb-sub{display:none}}
+@media (max-width:1120px){.sidebar{display:none}.mem{display:none}.topsearch{width:160px}}
+
+@media (max-width:1024px){
+  .topbar{padding:0 16px}
+  .workspacebar{padding:0 16px}
+  .board{padding:16px 16px 28px;scroll-padding-left:16px}
+}
+
+/* ================= планшет / крупный телефон ================= */
+@media (max-width:900px){
+  .topbar{flex:0 0 auto;flex-wrap:wrap;height:auto;min-height:58px;padding:calc(9px + env(safe-area-inset-top)) 16px 9px;gap:8px 10px}
+  .topnav{display:none}
+  /* дети .topbar-right становятся участниками flex-строки шапки */
+  .topbar-right{display:contents}
+  .topbar .theme-btn{margin-left:auto}
+  .topsearch{order:3;flex:1 1 100%;width:auto}
+
+  .wb-row1{height:auto;flex-wrap:wrap;padding:10px 0 12px;gap:10px}
+  .views{display:none}
+  .wb-title{flex:1 1 auto}
+  .wb-right{gap:8px;margin-left:auto}
+
+  /* доска листается вбок целыми колонками */
+  .board{gap:14px;scroll-snap-type:x mandatory}
+  .col{flex:0 0 320px;width:320px;scroll-snap-align:start}
+}
+
+/* ================= телефон ================= */
+@media (max-width:640px){
+  .topbar{padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
+  .brand{gap:9px}
+  .topbar .avatar{width:30px;height:30px}
+  .iconbtn{width:36px;height:36px}
+  .topsearch{height:36px}
+
+  .workspacebar{padding:0 12px}
+  .wb-row1{padding:9px 0 11px}
+  .wb-name{font-size:16.5px}
+  .wb-title-main{gap:8px}
+  .btn-label{display:none}
+  .btn-light.btn-icon-only{width:36px;padding:0;justify-content:center}
+  .btn-primary{padding:0 12px}
+
+  .board{padding:12px 12px 26px;scroll-padding-left:12px;gap:12px;scrollbar-width:none}
+  .board::-webkit-scrollbar{display:none}
+  .col{flex:0 0 min(calc(100vw - 44px),400px);width:min(calc(100vw - 44px),400px);border-radius:12px}
+  .col-add{padding:9px 10px}
+
+  /* ---------- модалки на весь экран ---------- */
+  dialog.modal,dialog.modal--view{
+    width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;
+    margin:0;border-radius:0;
+  }
+  .modal-card{height:100%;max-height:100%;border:0;border-radius:0}
+  .modal-head{padding:14px 16px 13px}
+  .modal-title{font-size:18px}
+  .modal-body{padding:16px;flex:1 1 auto}
+  .modal-body--view{padding:0}
+  .modal-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+  .modal-foot:not(.modal-foot--view) .btn-light,.modal-foot:not(.modal-foot--view) .btn-primary{flex:1}
+
+  .form-grid{grid-template-columns:1fr;gap:12px}
+  .field--full{grid-column:auto}
+  .form-section+.form-section{margin-top:14px;padding-top:14px}
+  .textarea{min-height:74px}
+
+  .order-hero{padding:14px 16px 16px}
+  .order-grid{grid-template-columns:1fr;padding:12px 16px 16px;gap:10px}
+  .order-panel--wide{grid-column:auto}
+  .detail{gap:10px}
+
+  .modal-foot--view{flex-direction:column;align-items:stretch;gap:10px}
+  .modal-foot--view .order-total{flex-direction:row;align-items:baseline;justify-content:space-between;width:100%}
+  .modal-foot--view .order-total b{font-size:18px}
+  .modal-foot--view .modal-actions{width:100%}
+  .modal-foot--view .modal-actions .btn-light,.modal-foot--view .modal-actions .btn-primary{flex:1}
+
+  .toast-region{bottom:calc(12px + env(safe-area-inset-bottom));width:calc(100% - 24px)}
+  .toast-region[popover]{bottom:calc(12px + env(safe-area-inset-bottom))}
+  body:has(dialog[open]) .toast-region[popover]{bottom:calc(132px + env(safe-area-inset-bottom))}
+  .toast{width:100%;justify-content:center}
+}
+
+/* ================= очень узкие экраны ================= */
+@media (max-width:380px){
+  .brand-name{display:none}
+  .wb-count{display:none}
+  .col{flex-basis:calc(100vw - 32px);width:calc(100vw - 32px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}

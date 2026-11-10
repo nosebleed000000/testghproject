@@ -1,0 +1,96 @@
+/* ============================================================
+   GaragePro — design tokens
+   ------------------------------------------------------------
+   Единственный источник цветов, радиусов, теней и типографики.
+   При изменении темы или бренда правьте только этот файл.
+
+   Тема переключается без JS: чекбокс #theme-toggle в разметке
+   включает блок тёмных значений через :has().
+   ============================================================ */
+
+/* ---------- light ---------- */
+:root{
+  color-scheme:light;
+
+  /* surfaces */
+  --bg:#f5f6f8;--surface:#ffffff;--col-bg:#f1f2f6;
+  --card:#ffffff;--ctl:#ffffff;--ring:#ffffff;--done:#fcfcfd;
+
+  /* text */
+  --text:#151a23;--text2:#5b6472;--text3:#98a1ae;
+
+  /* lines */
+  --border:#e6e8ee;--border2:#eff1f4;
+  --hover-line:#d3d7e0;--empty-line:#d5d9e2;--scroll:#d5d9e2;
+
+  /* brand */
+  --blue:#4f46e5;--blue-dark:#4338ca;--blue-hover:#4338ca;--blue-soft:#eeeefe;
+
+  /* semantic */
+  --green:#12b76a;--green-soft:#e7f8f0;--ok:#067647;
+  --red:#f04438;--red-soft:#feecea;--danger:#b42318;
+  --amber:#f59e0b;--amber-soft:#fdf3e3;--warn:#93530b;
+  --purple:#8b5cf6;--purple-soft:#f4efff;--violet:#6d28d9;
+  --teal:#0ea5b7;--teal-soft:#e6f7fa;--cyan:#0e7490;
+  --slate:#7c8db5;--gray-bar:#c3c9d4;
+
+  /* typography */
+  --font-sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --fs-2xs:10.5px;--fs-xs:11px;--fs-sm:12px;--fs-base:13px;
+  --fs-md:13.5px;--fs-lg:15px;--fs-xl:19px;--fs-2xl:21px;
+
+  /* spacing (для новых компонентов; старые значения сохранены) */
+  --sp-1:4px;--sp-2:6px;--sp-3:8px;--sp-4:10px;
+  --sp-5:12px;--sp-6:16px;--sp-7:20px;--sp-8:24px;
+
+  /* radii */
+  --r-card:12px;--r-ctl:10px;--r-modal:16px;--r-pill:999px;
+
+  /* elevation */
+  --card-shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.05);
+  --shadow-pop:0 8px 24px rgba(16,24,40,.10);
+  --shadow-modal:0 24px 64px rgba(16,24,40,.22),0 2px 8px rgba(16,24,40,.08);
+  --focus-ring:0 0 0 3px rgba(79,70,229,.18);
+  --overlay:rgba(16,24,40,.55);
+
+  /* toast */
+  --toast-bg:#111720;--toast-text:#f6f7fb;--toast-icon:#8de3b8;
+
+  /* motion */
+  --ease:cubic-bezier(.2,.8,.2,1);--dur:.18s;
+}
+
+/* ---------- dark ---------- */
+:root:is(:has(#theme-toggle:checked),[data-theme="dark"]){
+  color-scheme:dark;
+
+  --bg:#0f1319;--surface:#151a21;--col-bg:#12161d;
+  --card:#1a1f27;--ctl:#222833;--ring:#151a21;--done:#171c24;
+
+  --text:#e8ebf1;--text2:#a6aebc;--text3:#7c8595;
+
+  --border:#2a313b;--border2:#20262f;
+  --hover-line:#39414d;--empty-line:#2f3742;--scroll:#39414d;
+
+  --blue:#5b57e8;--blue-dark:#b9b7ff;--blue-hover:#4f46e5;--blue-soft:#242449;
+
+  --green:#2fbf8b;--green-soft:#12302a;--ok:#4fd7a0;
+  --red:#ff6b5e;--red-soft:#3a1d1d;--danger:#ff9a90;
+  --amber:#f5b544;--amber-soft:#33270f;--warn:#f0b45e;
+  --purple:#a78bfa;--purple-soft:#2a2140;--violet:#c4b1ff;
+  --teal:#38c7d4;--teal-soft:#0f2c31;--cyan:#5ed3e0;
+  --slate:#8f9aab;--gray-bar:#3a424e;
+
+  --card-shadow:0 1px 2px rgba(0,0,0,.55),0 1px 3px rgba(0,0,0,.45);
+  --shadow-pop:0 8px 24px rgba(0,0,0,.55);
+  --shadow-modal:0 24px 64px rgba(0,0,0,.65),0 2px 8px rgba(0,0,0,.35);
+  --focus-ring:0 0 0 3px rgba(91,87,232,.34);
+  --overlay:rgba(0,0,0,.62);
+
+  --toast-bg:#e8ebf1;--toast-text:#151a23;--toast-icon:#067647;
+}
+
+/* тонкая подстройка вложенных подложек в тёмной теме */
+:root:is(:has(#theme-toggle:checked),[data-theme="dark"]) .views{background:#10151b}
+:root:is(:has(#theme-toggle:checked),[data-theme="dark"]) .topsearch{background:#1c222b}

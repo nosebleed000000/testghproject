@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="ГаражПро — доска заказ-нарядов автосервиса">
+<script src="scripts/theme-boot.js"></script>
+<title>ГаражПро — заказ-наряды автосервиса</title>
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/layout.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/modal.css">
+<link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body>
+<script src="scripts/icons.js"></script>
+
+
+<!-- ============================= TOPBAR ============================= -->
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span>
+    <span class="brand-name">ГаражПро</span>
+  </div>
+  <nav class="topnav" aria-label="Основная навигация">
+    <a href="#" class="is-active">Заказ-наряды</a>
+    <a href="#">Клиенты</a>
+    <a href="#">Склад</a>
+    <a href="#">Отчёты</a>
+  </nav>
+  <div class="topbar-right">
+    <label class="topsearch">
+      <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="search" id="global-search" placeholder="Поиск по заказ-нарядам" aria-label="Поиск по заказ-нарядам" autocomplete="off">
+    </label>
+    <input type="checkbox" id="theme-toggle" class="theme-input" aria-label="Тёмная тема">
+    <label class="iconbtn theme-btn" for="theme-toggle" title="Переключить светлую / тёмную тему">
+      <svg class="ico ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      <svg class="ico ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+    </label>
+    <button class="iconbtn" type="button" aria-label="Уведомления"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg></button>
+    <a class="avatar av-9" id="current-avatar" href="admin.html" title="Админ-панель: Сергей Ильин">СИ</a>
+  </div>
+</header>
+
+<!-- ============================= WORKSPACE BAR ============================= -->
+<div class="workspacebar">
+  <div class="wb-row1">
+    <div class="wb-title">
+      <div class="wb-title-main">
+        <h1 class="wb-name">Заказ-наряды</h1>
+        <span class="wb-count" id="board-total">21</span>
+      </div>
+      <span class="wb-sub" id="workspace-date">Сервис-центр «Рига» · 09 ноября 2026</span>
+    </div>
+    <nav class="views" aria-label="Представление доски">
+      <a href="#" class="is-active"><svg class="ico" aria-hidden="true"><use href="#i-board"/></svg><span>Доска</span></a>
+      <a href="#"><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Список</span></a>
+      <a href="#"><svg class="ico" aria-hidden="true"><use href="#i-timeline"/></svg><span>Таймлайн</span></a>
+    </nav>
+    <div class="wb-right">
+      <div class="mem" aria-label="Участники доски">
+        <span class="avatar av-1" title="Игорь Ковалёв — мастер-приёмщик">ИК</span>
+        <span class="avatar av-2" title="Пётр Сазонов — мастер слесарного цеха">ПС</span>
+        <span class="avatar av-3" title="Артём Гусев — диагност">АГ</span>
+        <span class="mem-more">+6</span>
+      </div>
+      <div class="filter-wrap">
+        <button class="btn-light btn-icon-only" type="button" id="filter-btn" aria-expanded="false" aria-controls="filter-pop" aria-label="Фильтры">
+          <svg class="ico" aria-hidden="true"><use href="#i-filter"/></svg>
+          <span class="btn-label">Фильтры</span>
+          <span class="filter-count" id="filter-count" hidden>0</span>
+        </button>
+        <div class="filter-pop" id="filter-pop" role="group" aria-label="Фильтры заказ-нарядов" hidden>
+          <p class="filter-pop-title">Приоритет</p>
+          <div class="filter-priorities">
+            <label class="filter-check"><input type="checkbox" value="high" data-priority><span class="filter-dot filter-dot--high"></span><span>Высокий</span></label>
+            <label class="filter-check"><input type="checkbox" value="med" data-priority><span class="filter-dot filter-dot--med"></span><span>Средний</span></label>
+            <label class="filter-check"><input type="checkbox" value="low" data-priority><span class="filter-dot filter-dot--low"></span><span>Низкий</span></label>
+          </div>
+          <label class="filter-check filter-check--line"><input type="checkbox" id="filter-overdue"><span>Только просроченные</span></label>
+          <div class="filter-pop-foot">
+            <button class="filter-reset" type="button" id="filter-reset">Сбросить</button>
+            <span class="filter-summary" id="filter-summary"></span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" type="button" id="create-order-btn">
+        <svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg>Создать
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div class="layout">
+  <!-- ============================= SIDEBAR ============================= -->
+  <aside class="sidebar">
+    <nav class="side-group" aria-label="Заказ-наряды">
+      <a class="side-link is-active" href="#"><svg class="ico" aria-hidden="true"><use href="#i-board"/></svg>Доска заказ-нарядов<span class="side-count" id="sidebar-board-count">21</span></a>
+      <a class="side-link" href="#"><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg>Мои заказ-наряды<span class="side-count">6</span></a>
+      <a class="side-link" href="#"><svg class="ico" aria-hidden="true"><use href="#i-alert"/></svg>Просрочено<span class="side-count side-count--red" id="sidebar-overdue-count">2</span></a>
+    </nav>
+
+    <div class="side-sep"></div>
+
+    <nav class="side-group" aria-label="Разделы">
+      <a class="side-link" href="#"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>Клиенты и авто</a>
+      <a class="side-link" href="#"><svg class="ico" aria-hidden="true"><use href="#i-package"/></svg>Склад запчастей<span class="side-count side-count--red">7</span></a>
+      <a class="side-link" href="#"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg>Мастера и смены</a>
+      <a class="side-link" href="#"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg>Отчёты</a>
+    </nav>
+
+    <div class="side-foot"><span class="dot"></span>Смена идёт · до 20:00</div>
+  </aside>
+
+  <div class="board-wrap">
+    <div class="board" id="board" aria-label="Доска заказ-нарядов" aria-live="polite"></div>
+    <noscript><p style="padding:20px;color:var(--text2)">Для работы доски заказ-нарядов включите JavaScript.</p></noscript>
+  </div>
+</div>
+
+
+<!-- ============================= CREATE MODAL ============================= -->
+<dialog class="modal" id="create-dialog" aria-labelledby="create-title">
+  <form class="modal-card" id="create-form" novalidate>
+    <header class="modal-head">
+      <div class="modal-head-text">
+        <p class="modal-eyebrow">Новый документ</p>
+        <h2 class="modal-title" id="create-title">Создать заказ-наряд</h2>
+      </div>
+      <button class="iconbtn modal-close" type="button" data-close aria-label="Закрыть окно создания">
+        <svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+      <p class="form-hint" id="create-hint">Заполните данные клиента и автомобиля. Номер заказ-наряда присвоится автоматически.</p>
+
+      <fieldset class="form-section">
+        <legend class="form-section-title">Клиент</legend>
+        <div class="form-grid">
+          <div class="field" data-field="client">
+            <label class="field-label" for="f-client">Имя клиента <span class="req">*</span></label>
+            <input class="input" id="f-client" name="client" type="text" placeholder="Дмитрий Соколов" autocomplete="name" required aria-describedby="err-client">
+            <p class="field-error" id="err-client">Укажите имя клиента</p>
+          </div>
+          <div class="field" data-field="phone">
+            <label class="field-label" for="f-phone">Телефон <span class="req">*</span></label>
+            <input class="input" id="f-phone" name="phone" type="tel" placeholder="+371 26 123 456" autocomplete="tel" inputmode="tel" required aria-describedby="err-phone">
+            <p class="field-error" id="err-phone">Введите номер в формате +371 26 123 456</p>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-section">
+        <legend class="form-section-title">Автомобиль</legend>
+        <div class="form-grid">
+          <div class="field field--full" data-field="title">
+            <label class="field-label" for="f-car">Марка и модель <span class="req">*</span></label>
+            <input class="input" id="f-car" name="title" type="text" placeholder="Toyota Camry 70 · 2.5 AT" required aria-describedby="err-title">
+            <p class="field-error" id="err-title">Укажите автомобиль</p>
+          </div>
+          <div class="field" data-field="plate">
+            <label class="field-label" for="f-plate">Госномер</label>
+            <input class="input" id="f-plate" name="plate" type="text" placeholder="AB-1234" autocomplete="off" maxlength="7" aria-describedby="err-plate">
+            <p class="field-error" id="err-plate">Формат латвийского номера: AB-1234</p>
+          </div>
+          <div class="field" data-field="mileage">
+            <label class="field-label" for="f-mileage">Пробег, км</label>
+            <input class="input" id="f-mileage" name="mileage" type="number" min="0" step="100" placeholder="84 200" inputmode="numeric">
+          </div>
+          <div class="field" data-field="year">
+            <label class="field-label" for="f-year">Год выпуска</label>
+            <input class="input" id="f-year" name="year" type="number" min="1950" max="2035" step="1" placeholder="2021" inputmode="numeric">
+          </div>
+          <div class="field" data-field="master">
+            <label class="field-label" for="f-master">Мастер</label>
+            <select class="select" id="f-master" name="master"></select>
+          </div>
+        </div>
+      </fieldset>
+
+
+      <fieldset class="form-section">
+        <legend class="form-section-title">Работы и сроки</legend>
+        <div class="form-grid">
+          <div class="field" data-field="stage">
+            <label class="field-label" for="f-stage">Колонка</label>
+            <select class="select" id="f-stage" name="stage"></select>
+          </div>
+          <div class="field" data-field="type">
+            <label class="field-label" for="f-type">Тип работ</label>
+            <select class="select" id="f-type" name="type">
+              <option value="Диагностика" data-tone="blue">Диагностика</option>
+              <option value="ТО" data-tone="teal">ТО</option>
+              <option value="Ходовая" data-tone="blue">Ходовая</option>
+              <option value="Двигатель" data-tone="red">Двигатель</option>
+              <option value="Трансмиссия" data-tone="purple">Трансмиссия</option>
+              <option value="Тормоза" data-tone="amber">Тормоза</option>
+              <option value="Электрика" data-tone="purple">Электрика</option>
+              <option value="Кузов" data-tone="purple">Кузов</option>
+              <option value="Другое" data-tone="gray">Другое</option>
+            </select>
+          </div>
+          <div class="field field--full" data-field="priority">
+            <span class="field-label" id="priority-label">Приоритет</span>
+            <div class="segmented" role="radiogroup" aria-labelledby="priority-label">
+              <label class="seg seg--high"><input type="radio" name="priority" value="high"><span>Высокий</span></label>
+              <label class="seg seg--med"><input type="radio" name="priority" value="med" checked><span>Средний</span></label>
+              <label class="seg seg--low"><input type="radio" name="priority" value="low"><span>Низкий</span></label>
+            </div>
+          </div>
+          <div class="field" data-field="price">
+            <label class="field-label" for="f-price">Стоимость, €</label>
+            <input class="input" id="f-price" name="price" type="number" min="0" step="10" placeholder="180" inputmode="numeric">
+          </div>
+          <div class="field" data-field="due">
+            <label class="field-label" for="f-due">Планируемая выдача</label>
+            <input class="input" id="f-due" name="due" type="date">
+          </div>
+          <div class="field field--full" data-field="desc">
+            <label class="field-label" for="f-desc">Описание работ <span class="req">*</span></label>
+            <textarea class="textarea" id="f-desc" name="desc" rows="3" placeholder="Жалобы клиента, диагностика и согласованные работы" required aria-describedby="err-desc"></textarea>
+            <p class="field-error" id="err-desc">Опишите работы или жалобу клиента</p>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <footer class="modal-foot">
+      <button class="btn-light" type="button" data-close>Отмена</button>
+      <button class="btn-primary" type="submit">
+        <svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg>Создать заказ-наряд
+      </button>
+    </footer>
+  </form>
+</dialog>
+
+
+<!-- ============================= VIEW MODAL ============================= -->
+<dialog class="modal modal--view" id="view-dialog" aria-labelledby="view-title">
+  <div class="modal-card">
+    <header class="modal-head">
+      <div class="modal-head-text">
+        <p class="modal-eyebrow" id="view-key">ЗН-0000</p>
+        <h2 class="modal-title" id="view-title">Заказ-наряд</h2>
+      </div>
+      <button class="iconbtn modal-close" type="button" data-close aria-label="Закрыть просмотр">
+        <svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+    </header>
+    <div class="modal-body modal-body--view" id="view-body"></div>
+    <footer class="modal-foot modal-foot--view">
+      <div class="order-total">
+        <span>Стоимость работ</span>
+        <b id="view-price">—</b>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-light" type="button" data-close>Закрыть</button>
+        <button class="btn-primary" type="button" id="view-advance">
+          <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+          <span id="view-advance-label">Переместить дальше</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+</dialog>
+
+<div class="toast-region" id="toast-region" popover="manual" aria-live="polite" aria-atomic="false"></div>
+
+<script src="scripts/data.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/store.js"></script>
+<script src="scripts/employees.js"></script>
+<script src="scripts/board.js"></script>
+<script src="scripts/modals.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

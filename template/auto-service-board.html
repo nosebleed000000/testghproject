@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ГаражПро — заказ-наряды автосервиса</title>
+<style>
+/* ================= tokens (light) ================= */
+:root{
+  color-scheme:light;
+  --bg:#f5f6f8;--surface:#ffffff;--col-bg:#f1f2f6;
+  --card:#ffffff;--ctl:#ffffff;--ring:#ffffff;--done:#fcfcfd;
+  --text:#151a23;--text2:#5b6472;--text3:#98a1ae;
+  --border:#e6e8ee;--border2:#eff1f4;--hover-line:#d3d7e0;--empty-line:#d5d9e2;--scroll:#d5d9e2;
+  --blue:#4f46e5;--blue-dark:#4338ca;--blue-soft:#eeeefe;
+  --green:#12b76a;--green-soft:#e7f8f0;--ok:#067647;
+  --red:#f04438;--red-soft:#feecea;--danger:#b42318;
+  --amber:#f59e0b;--amber-soft:#fdf3e3;--warn:#93530b;
+  --purple:#8b5cf6;--purple-soft:#f4efff;--violet:#6d28d9;
+  --teal:#0ea5b7;--teal-soft:#e6f7fa;--cyan:#0e7490;
+  --slate:#7c8db5;--gray-bar:#c3c9d4;
+  --card-shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.05);
+  --shadow-pop:0 8px 24px rgba(16,24,40,.10);
+  --r-card:12px;--r-ctl:10px;
+}
+
+/* ================= tokens (dark) ================= */
+:root:has(#theme-toggle:checked){
+  color-scheme:dark;
+  --bg:#0f1319;--surface:#151a21;--col-bg:#12161d;
+  --card:#1a1f27;--ctl:#222833;--ring:#151a21;--done:#171c24;
+  --text:#e8ebf1;--text2:#a6aebc;--text3:#7c8595;
+  --border:#2a313b;--border2:#20262f;--hover-line:#39414d;--empty-line:#2f3742;--scroll:#39414d;
+  --blue:#5b57e8;--blue-dark:#b9b7ff;--blue-soft:#242449;
+  --green:#2fbf8b;--green-soft:#12302a;--ok:#4fd7a0;
+  --red:#ff6b5e;--red-soft:#3a1d1d;--danger:#ff9a90;
+  --amber:#f5b544;--amber-soft:#33270f;--warn:#f0b45e;
+  --purple:#a78bfa;--purple-soft:#2a2140;--violet:#c4b1ff;
+  --teal:#38c7d4;--teal-soft:#0f2c31;--cyan:#5ed3e0;
+  --slate:#8f9aab;--gray-bar:#3a424e;
+  --card-shadow:0 1px 2px rgba(0,0,0,.55),0 1px 3px rgba(0,0,0,.45);
+  --shadow-pop:0 8px 24px rgba(0,0,0,.55);
+}
+/* тонкая подстройка вложенных подложек в тёмной теме */
+:root:has(#theme-toggle:checked) .views{background:#10151b}
+:root:has(#theme-toggle:checked) .topsearch{background:#1c222b}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;height:100vh;display:flex;flex-direction:column;overflow:hidden;
+  background:var(--bg);color:var(--text);
+  font:13.5px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input{font:inherit}
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.ico{display:block;width:16px;height:16px;flex:0 0 auto}
+.muted{color:var(--text2)}
+.nowrap{white-space:nowrap}
+
+/* ================= topbar ================= */
+.topbar{flex:0 0 58px;height:58px;display:flex;align-items:center;gap:16px;padding:0 20px;background:var(--surface);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#6d5efc,#4338ca);display:grid;place-items:center;color:#fff;box-shadow:0 2px 6px rgba(79,70,229,.28)}
+.brand-mark .ico{width:17px;height:17px}
+.brand-name{font-size:15px;font-weight:700;letter-spacing:-.2px;white-space:nowrap}
+.topnav{display:flex;align-items:center;gap:2px}
+.topnav a{display:flex;align-items:center;height:32px;padding:0 12px;border-radius:9px;color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;white-space:nowrap}
+.topnav a:hover{background:var(--border2);color:var(--text)}
+.topnav a.is-active{background:var(--blue-soft);color:var(--blue-dark);font-weight:600}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.topsearch{display:flex;align-items:center;gap:8px;height:36px;width:264px;padding:0 12px;border-radius:var(--r-ctl);background:var(--border2);border:1px solid transparent}
+.topsearch:focus-within{background:var(--ctl);border-color:var(--blue)}
+.topsearch .ico{width:15px;height:15px;color:var(--text3)}
+.topsearch input{flex:1;min-width:0;border:0;background:none;outline:none;color:var(--text);font-size:13px}
+.topsearch input::placeholder{color:var(--text3)}
+.iconbtn{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;color:var(--text2)}
+.iconbtn:hover{background:var(--border2);color:var(--text)}
+.iconbtn .ico{width:18px;height:18px}
+/* ===== переключатель темы: только CSS, без JS и анимаций ===== */
+.theme-input{position:absolute;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}
+.theme-btn{cursor:pointer;user-select:none}
+.theme-btn .ico--sun{display:none}
+:root:has(#theme-toggle:checked) .theme-btn .ico--moon{display:none}
+:root:has(#theme-toggle:checked) .theme-btn .ico--sun{display:block}
+.theme-input:focus-visible+.theme-btn{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ================= avatars ================= */
+.avatar{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;font-size:10.5px;font-weight:700;color:#fff;letter-spacing:.2px;flex:0 0 auto}
+.topbar .avatar{width:32px;height:32px;font-size:11px;box-shadow:0 0 0 2px var(--ring),0 0 0 3px var(--border)}
+.av-1{background:#4f46e5}.av-2{background:#8b5cf6}.av-3{background:#12b76a}
+.av-4{background:#f04438}.av-5{background:#f59e0b}.av-6{background:#0ea5b7}
+.av-7{background:#6366f1}.av-8{background:#ec4899}.av-9{background:#334155}
+
+/* ================= workspace bar ================= */
+.workspacebar{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px}
+.wb-row1{display:flex;align-items:center;gap:18px;height:64px}
+.wb-title{display:flex;flex-direction:column;gap:1px;min-width:0}
+.wb-title-main{display:flex;align-items:center;gap:10px}
+.wb-name{font-size:18px;font-weight:700;letter-spacing:-.3px;line-height:1.25;white-space:nowrap}
+.wb-sub{font-size:12px;color:var(--text3);white-space:nowrap}
+.wb-count{font-size:12px;font-weight:600;color:var(--text3);background:var(--border2);border-radius:999px;padding:2px 9px;line-height:18px}
+.views{display:flex;align-items:center;gap:2px;padding:3px;border-radius:11px;background:var(--border2)}
+.views a{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:8px;color:var(--text2);text-decoration:none;font-size:12.5px;font-weight:600;white-space:nowrap}
+.views a:hover{color:var(--text)}
+.views a.is-active{background:var(--ctl);color:var(--text);box-shadow:var(--card-shadow)}
+.views .ico{width:14px;height:14px}
+.wb-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.mem{display:flex;align-items:center;padding-left:7px}
+.mem .avatar{width:28px;height:28px;font-size:10.5px;margin-left:-7px;box-shadow:0 0 0 2px var(--ring)}
+.mem .avatar:first-child{margin-left:0}
+.mem-more{font-size:12px;font-weight:600;color:var(--text3);margin-left:8px}
+.btn-light{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:var(--r-ctl);border:1px solid var(--border);background:var(--ctl);color:var(--text2);font-size:13px;font-weight:600;white-space:nowrap}
+.btn-light:hover{background:var(--border2);color:var(--text)}
+.btn-light .ico{width:15px;height:15px}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px;border-radius:var(--r-ctl);background:var(--blue);color:#fff;font-size:13px;font-weight:600;white-space:nowrap;box-shadow:0 1px 2px rgba(79,70,229,.35)}
+.btn-primary:hover{background:var(--blue-dark)}
+.btn-primary .ico{width:15px;height:15px}
+
+/* ================= layout ================= */
+.layout{flex:1;min-height:0;display:flex}
+.board-wrap{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
+
+/* ================= sidebar ================= */
+.sidebar{flex:0 0 232px;width:232px;background:var(--surface);border-right:1px solid var(--border);padding:14px 12px 12px;overflow:auto;display:flex;flex-direction:column}
+.side-group{display:flex;flex-direction:column;gap:2px}
+.side-sep{flex:0 0 auto;height:1px;background:var(--border2);margin:12px 8px}
+.side-link{display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;border-radius:9px;color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;white-space:nowrap}
+.side-link:hover{background:var(--border2);color:var(--text)}
+.side-link .ico{width:16px;height:16px;color:var(--text3);flex:0 0 auto}
+.side-link.is-active{background:var(--blue-soft);color:var(--blue-dark);font-weight:600}
+.side-link.is-active .ico{color:var(--blue-dark)}
+.side-count{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--text3);background:var(--border2);border-radius:999px;padding:0 8px;min-width:20px;text-align:center;line-height:19px}
+.side-count--red{background:var(--red-soft);color:var(--red)}
+.side-foot{margin-top:auto;padding:12px 10px 4px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3);white-space:nowrap}
+.side-foot .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft);flex:0 0 auto}
+
+/* ================= board ================= */
+.board{flex:1;min-height:0;display:flex;align-items:flex-start;gap:16px;padding:20px 20px 32px;overflow:auto}
+.col{flex:0 0 300px;width:300px;background:var(--col-bg);border-radius:14px;padding:8px 8px 10px}
+.col-head{display:flex;align-items:center;gap:8px;padding:6px 5px 10px}
+.col-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.col-name{font-size:12.5px;font-weight:600;color:var(--text);white-space:nowrap}
+.col-count{font-size:11.5px;font-weight:600;color:var(--text3);background:var(--ctl);border-radius:999px;padding:0 8px;line-height:19px;min-width:22px;text-align:center;flex:0 0 auto}
+.col-wip{font-size:10.5px;font-weight:600;color:var(--text3);background:var(--ctl);border-radius:999px;padding:0 7px;line-height:19px;white-space:nowrap;flex:0 0 auto}
+.col-wip.is-over{background:var(--red-soft);color:var(--red)}
+.col-body{display:flex;flex-direction:column;gap:10px}
+.col-add{display:flex;align-items:center;gap:6px;width:100%;margin-top:10px;padding:8px 10px;border-radius:9px;color:var(--text3);font-size:12.5px;font-weight:600}
+.col-add:hover{background:var(--ctl);color:var(--blue-dark)}
+.col-add .ico{width:15px;height:15px}
+.col-empty{padding:14px 12px;border:1px dashed var(--empty-line);border-radius:10px;font-size:12px;color:var(--text3);text-align:center}
+/* ================= cards ================= */
+.card{background:var(--card);border-radius:var(--r-card);border:1px solid var(--border);box-shadow:var(--card-shadow);padding:12px 14px 11px}
+.card:hover{border-color:var(--hover-line);box-shadow:var(--shadow-pop)}
+.card--late{box-shadow:inset 3px 0 0 var(--red),var(--card-shadow)}
+.card--late:hover{box-shadow:inset 3px 0 0 var(--red),var(--shadow-pop)}
+.card--done{background:var(--done)}
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.card-key{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.2px}
+.prio{display:grid;place-items:center;width:14px;height:14px}
+.prio .ico{width:11px;height:11px}
+.prio--high{color:var(--red)}
+.prio--med{color:var(--amber)}
+.prio--low{color:var(--slate)}
+.card-top .avatar{width:24px;height:24px;font-size:9.5px;margin-left:auto}
+.card-title{font-size:13.5px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:3px;letter-spacing:-.1px}
+.card-desc{font-size:12.5px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.card--done .card-title{color:var(--text2)}
+.labels{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.label{font-size:11px;font-weight:600;line-height:20px;padding:0 9px;border-radius:999px;letter-spacing:.1px;white-space:nowrap}
+.label--blue{background:var(--blue-soft);color:var(--blue-dark)}
+.label--green{background:var(--green-soft);color:var(--ok)}
+.label--red{background:var(--red-soft);color:var(--danger)}
+.label--amber{background:var(--amber-soft);color:var(--warn)}
+.label--purple{background:var(--purple-soft);color:var(--violet)}
+.label--teal{background:var(--teal-soft);color:var(--cyan)}
+.label--gray{background:var(--border2);color:var(--text2)}
+.car{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.plate{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;font-weight:700;letter-spacing:.4px;color:var(--text2);background:var(--border2);border-radius:7px;padding:2px 7px;white-space:nowrap}
+.car-meta{font-size:11.5px;color:var(--text3);white-space:nowrap}
+.client{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);margin-bottom:10px;min-width:0}
+.client .ico{width:13px;height:13px;color:var(--text3)}
+.client span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.progress{height:6px;border-radius:999px;background:var(--border2);overflow:hidden;margin-bottom:6px}
+.progress>span{display:block;height:100%;border-radius:999px;background:var(--blue)}
+.progress--green>span{background:var(--green)}
+.progress--amber>span{background:var(--amber)}
+.progress--purple>span{background:var(--purple)}
+.progress--red>span{background:var(--red)}
+.progress--gray>span{background:var(--gray-bar)}
+.progress-cap{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;color:var(--text3);margin-bottom:10px}
+.progress-cap b{color:var(--text2);font-weight:600}
+/* ================= card footer & misc ================= */
+.ico{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ico--fill{fill:currentColor;stroke:none}
+.ico--thin{stroke-width:1.65}
+.card-foot{display:flex;align-items:center;flex-wrap:wrap;gap:5px 12px;padding-top:9px;border-top:1px solid var(--border2);font-size:11.5px;color:var(--text3)}
+.foot{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.foot .ico{width:13px;height:13px;color:var(--text3)}
+.foot--late{color:var(--red);font-weight:600;background:var(--red-soft);border-radius:999px;padding:1px 9px 1px 7px}
+.foot--late .ico{color:var(--red)}
+.foot--ok{color:var(--ok);font-weight:600;background:var(--green-soft);border-radius:999px;padding:1px 9px 1px 7px}
+.foot--ok .ico{color:var(--ok)}
+.card-foot .right{margin-left:auto;color:var(--text2);font-weight:600}
+.subtasks{display:flex;align-items:center;gap:5px;margin:0 0 10px}
+.subtasks .mini{flex:1 1 0;height:5px;border-radius:999px;background:var(--border2)}
+.subtasks .mini.is-done{background:var(--green)}
+.subtasks .cap{font-size:11px;color:var(--text3);white-space:nowrap;margin-left:3px}
+.board::-webkit-scrollbar,.sidebar::-webkit-scrollbar{width:10px;height:10px}
+.board::-webkit-scrollbar-track,.sidebar::-webkit-scrollbar-track{background:transparent}
+.board::-webkit-scrollbar-thumb,.sidebar::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:999px;border:3px solid transparent;background-clip:content-box}
+@media (max-width:1320px){.topsearch{width:200px}}
+@media (max-width:1280px){.views a span{display:none}}
+@media (max-width:1240px){.topnav a:nth-child(n+4){display:none}.wb-sub{display:none}}
+@media (max-width:1120px){.sidebar{display:none}.mem{display:none}.topsearch{width:160px}}
+
+</style>
+</head>
+<body>
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.7-3.7"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3 5h18l-7 8.2V20l-4-2.2v-4.6z"/></symbol>
+  <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="7" rx="1"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.6 6h.01M3.6 12h.01M3.6 18h.01"/></symbol>
+  <symbol id="i-timeline" viewBox="0 0 24 24"><path d="M3 6h10M7 12h10M11 18h10"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M6 21v-7"/><path d="M12 21V7"/><path d="M18 21V3"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3.2 1.9"/></symbol>
+  <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.6 2.6L16 9.6"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.2 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A8.6 8.6 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3.1-5.8 3.1 1.1-6.5L2.6 9.8l6.5-.9z"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></symbol>
+  <symbol id="i-truck" viewBox="0 0 24 24"><path d="M1 4h13v12H1z"/><path d="M14 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></symbol>
+  <symbol id="i-ruble" viewBox="0 0 24 24"><path d="M8 21V3h5.2a4.4 4.4 0 0 1 0 8.8H8M5.5 17.5h9"/></symbol>
+  <symbol id="i-prio-high" viewBox="0 0 16 16"><path d="M8 1.5 14 8H2z"/><path d="M8 7.5 14 14H2z"/></symbol>
+  <symbol id="i-prio-med" viewBox="0 0 16 16"><path d="M2 5.4h12V8H2z"/><path d="M2 9.6h12v2.6H2z"/></symbol>
+  <symbol id="i-prio-low" viewBox="0 0 16 16"><path d="M8 14.5 2 8h12z"/></symbol>
+
+</svg>
+
+<!-- ============================= TOPBAR ============================= -->
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark"><svg class="ico"><use href="#i-wrench"/></svg></span>
+    <span class="brand-name">ГаражПро</span>
+  </div>
+  <nav class="topnav" aria-label="Основная навигация">
+    <a href="#" class="is-active">Заказ-наряды</a>
+    <a href="#">Клиенты</a>
+    <a href="#">Склад</a>
+    <a href="#">Отчёты</a>
+  </nav>
+  <div class="topbar-right">
+    <label class="topsearch">
+      <svg class="ico"><use href="#i-search"/></svg>
+      <input type="search" placeholder="Поиск по заказ-нарядам" aria-label="Поиск по заказ-нарядам">
+    </label>
+    <input type="checkbox" id="theme-toggle" class="theme-input" aria-label="Тёмная тема">
+    <label class="iconbtn theme-btn" for="theme-toggle" title="Переключить светлую / тёмную тему">
+      <svg class="ico ico--moon"><use href="#i-moon"/></svg>
+      <svg class="ico ico--sun"><use href="#i-sun"/></svg>
+    </label>
+    <button class="iconbtn" type="button" aria-label="Уведомления"><svg class="ico"><use href="#i-bell"/></svg></button>
+    <span class="avatar av-9" title="Администратор: Сергей Ильин">СИ</span>
+  </div>
+</header>
+
+<!-- ============================= WORKSPACE BAR ============================= -->
+<div class="workspacebar">
+  <div class="wb-row1">
+    <div class="wb-title">
+      <div class="wb-title-main">
+        <h1 class="wb-name">Заказ-наряды</h1>
+        <span class="wb-count">21</span>
+      </div>
+      <span class="wb-sub">Сервис-центр «Северный» · 09 ноября 2026</span>
+    </div>
+    <nav class="views" aria-label="Представление доски">
+      <a href="#" class="is-active"><svg class="ico"><use href="#i-board"/></svg><span>Доска</span></a>
+      <a href="#"><svg class="ico"><use href="#i-list"/></svg><span>Список</span></a>
+      <a href="#"><svg class="ico"><use href="#i-timeline"/></svg><span>Таймлайн</span></a>
+    </nav>
+    <div class="wb-right">
+      <div class="mem" aria-label="Участники доски">
+        <span class="avatar av-1" title="Игорь Ковалёв — мастер-приёмщик">ИК</span>
+        <span class="avatar av-2" title="Пётр Сазонов — мастер слесарного цеха">ПС</span>
+        <span class="avatar av-3" title="Артём Гусев — диагност">АГ</span>
+        <span class="mem-more">+6</span>
+      </div>
+      <button class="btn-light" type="button"><svg class="ico"><use href="#i-filter"/></svg>Фильтры</button>
+      <button class="btn-primary" type="button"><svg class="ico"><use href="#i-plus"/></svg>Создать</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- ============================= SIDEBAR ============================= -->
+<aside class="sidebar">
+  <nav class="side-group" aria-label="Заказ-наряды">
+    <a class="side-link is-active" href="#"><svg class="ico"><use href="#i-board"/></svg>Доска заказ-нарядов<span class="side-count">21</span></a>
+    <a class="side-link" href="#"><svg class="ico"><use href="#i-user"/></svg>Мои заказ-наряды<span class="side-count">6</span></a>
+    <a class="side-link" href="#"><svg class="ico"><use href="#i-alert"/></svg>Просрочено<span class="side-count side-count--red">2</span></a>
+  </nav>
+
+  <div class="side-sep"></div>
+
+  <nav class="side-group" aria-label="Разделы">
+    <a class="side-link" href="#"><svg class="ico"><use href="#i-users"/></svg>Клиенты и авто</a>
+    <a class="side-link" href="#"><svg class="ico"><use href="#i-package"/></svg>Склад запчастей<span class="side-count side-count--red">7</span></a>
+    <a class="side-link" href="#"><svg class="ico"><use href="#i-wrench"/></svg>Мастера и смены</a>
+    <a class="side-link" href="#"><svg class="ico"><use href="#i-chart"/></svg>Отчёты</a>
+  </nav>
+
+  <div class="side-foot"><span class="dot"></span>Смена идёт · до 20:00</div>
+</aside>
+
+  <div class="board-wrap">
+    <div class="board">
+      <section class="col">
+      <header class="col-head">
+        <span class="col-dot" style="background:#475569"></span>
+        <span class="col-name">Новые заявки</span>
+        <span class="col-count">3</span>
+      </header>
+      <div class="col-body">
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--high" title="Приоритет: высокий"><svg class="ico ico--fill"><use href="#i-prio-high"/></svg></span>
+            <span class="card-key">ЗН-2851</span>
+            <span class="avatar av-1" title="Мастер-приёмщик: Игорь Ковалёв">ИК</span>
+          </div>
+          <h3 class="card-title">Toyota Camry 70 · 2.5 AT</h3>
+          <p class="card-desc">Стук в передней подвеске на неровностях, нужна диагностика ходовой</p>
+          <div class="labels"><span class="label label--blue">Ходовая</span><span class="label label--green">Гарантия</span></div>
+          <div class="car"><span class="plate">Е 774 ОС 199</span><span class="car-meta">84 200 км · 2021</span></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Дмитрий Соколов · +7 916 214-08-77</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>09.11, 08:40</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>2</span>
+            <span class="foot right"><svg class="ico"><use href="#i-clock"/></svg>слот 14:00</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--low" title="Приоритет: низкий"><svg class="ico ico--fill"><use href="#i-prio-low"/></svg></span>
+            <span class="card-key">ЗН-2852</span>
+            <span class="avatar av-2" title="Мастер-приёмщик: Пётр Сазонов">ПС</span>
+          </div>
+          <h3 class="card-title">Hyundai Creta · 1.6 AT</h3>
+          <p class="card-desc">ТО-60 000: масло ДВС, фильтры, свечи, осмотр подвески и тормозов</p>
+          <div class="labels"><span class="label label--teal">ТО</span><span class="label label--gray">Расходники</span></div>
+          <div class="car"><span class="plate">О 318 ТМ 77</span><span class="car-meta">61 480 км · 2019</span></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Ольга Мартынова · +7 903 118-42-10</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>09.11, 09:05</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>1</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>18 400 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--med" title="Приоритет: средний"><svg class="ico ico--fill"><use href="#i-prio-med"/></svg></span>
+            <span class="card-key">ЗН-2853</span>
+            <span class="avatar av-3" title="Диагност: Артём Гусев">АГ</span>
+          </div>
+          <h3 class="card-title">Ford Focus III · 1.6 MT</h3>
+          <p class="card-desc">Кондиционер не охлаждает, при включении слышен щелчок компрессора</p>
+          <div class="labels"><span class="label label--purple">Электрика</span><span class="label label--blue">Диагностика</span></div>
+          <div class="car"><span class="plate">К 902 РН 50</span><span class="car-meta">143 900 км · 2013</span></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Артур Бегларян · +7 925 640-77-31</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>09.11, 09:30</span>
+            <span class="foot foot--late"><svg class="ico"><use href="#i-clock"/></svg>срок сегодня</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>1 500 ₽</span>
+          </div>
+        </article>
+
+        <button class="col-add" type="button"><svg class="ico"><use href="#i-plus"/></svg>Добавить заказ-наряд</button>
+      </div>
+    </section>
+      <section class="col">
+      <header class="col-head">
+        <span class="col-dot" style="background:#0ea5b7"></span>
+        <span class="col-name">Диагностика</span>
+        <span class="col-count">3</span>
+      </header>
+      <div class="col-body">
+        <article class="card card--late">
+          <div class="card-top">
+            <span class="prio prio--high" title="Приоритет: высокий"><svg class="ico ico--fill"><use href="#i-prio-high"/></svg></span>
+            <span class="card-key">ЗН-2844</span>
+            <span class="avatar av-3" title="Диагност: Артём Гусев">АГ</span>
+          </div>
+          <h3 class="card-title">BMW 3 F30 · 2.0d AT</h3>
+          <p class="card-desc">Ошибка по двигателю, потеря тяги. Считаны коды P0299, P0234</p>
+          <div class="labels"><span class="label label--teal">Диагностика</span><span class="label label--red">Двигатель</span></div>
+          <div class="car"><span class="plate">Х 041 АК 77</span><span class="car-meta">128 700 км · 2016</span></div>
+          <div class="progress progress--purple"><span style="width:40%"></span></div>
+          <div class="progress-cap"><span>Проверка турбины</span><b>2 из 5 пунктов</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Сергей Прохоров · +7 916 771-02-18</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>08.11, 16:20</span>
+            <span class="foot foot--late"><svg class="ico"><use href="#i-alert"/></svg>SLA +2 ч</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>5</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>3 200 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--med" title="Приоритет: средний"><svg class="ico ico--fill"><use href="#i-prio-med"/></svg></span>
+            <span class="card-key">ЗН-2846</span>
+            <span class="avatar av-1" title="Мастер-приёмщик: Игорь Ковалёв">ИК</span>
+          </div>
+          <h3 class="card-title">Lada Vesta SW · 1.6 MT</h3>
+          <p class="card-desc">Скрип и вибрация при торможении, замерить толщину дисков</p>
+          <div class="labels"><span class="label label--amber">Тормоза</span><span class="label label--gray">Осмотр</span></div>
+          <div class="car"><span class="plate">М 557 ВХ 197</span><span class="car-meta">47 300 км · 2022</span></div>
+          <div class="progress progress--purple"><span style="width:60%"></span></div>
+          <div class="progress-cap"><span>Замер износа</span><b>3 из 5 пунктов</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Наталья Гринько · +7 985 302-55-49</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>09.11, 10:15</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>1</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>1 500 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--high" title="Приоритет: высокий"><svg class="ico ico--fill"><use href="#i-prio-high"/></svg></span>
+            <span class="card-key">ЗН-2839</span>
+            <span class="avatar av-2" title="Мастер слесарного цеха: Пётр Сазонов">ПС</span>
+          </div>
+          <h3 class="card-title">Mercedes-Benz GLC 250 · 2.0 AT</h3>
+          <p class="card-desc">Гул и рывки в АКПП 9G-Tronic, требуется углублённая диагностика</p>
+          <div class="labels"><span class="label label--purple">АКПП</span><span class="label label--green">Согласовано</span></div>
+          <div class="car"><span class="plate">У 226 КК 99</span><span class="car-meta">96 800 км · 2018</span></div>
+          <div class="progress progress--purple"><span style="width:25%"></span></div>
+          <div class="progress-cap"><span>Тест-драйв с мастером</span><b>1 из 4 этапов</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Ирина Волошина · +7 909 887-16-03</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>09.11, 07:50</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>8</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>4 500 ₽</span>
+          </div>
+        </article>
+
+        <button class="col-add" type="button"><svg class="ico"><use href="#i-plus"/></svg>Добавить заказ-наряд</button>
+      </div>
+    </section>
+      <section class="col">
+      <header class="col-head">
+        <span class="col-dot" style="background:#f59e0b"></span>
+        <span class="col-name" title="Согласование с клиентом">Согласование</span>
+        <span class="col-count">2</span>
+      </header>
+      <div class="col-body">
+        <article class="card card--late">
+          <div class="card-top">
+            <span class="prio prio--high" title="Приоритет: высокий"><svg class="ico ico--fill"><use href="#i-prio-high"/></svg></span>
+            <span class="card-key">ЗН-2821</span>
+            <span class="avatar av-1" title="Мастер-приёмщик: Игорь Ковалёв">ИК</span>
+          </div>
+          <h3 class="card-title">Skoda Octavia A7 · 1.8 TSI DSG</h3>
+          <p class="card-desc">Замена сцепления DSG-7, смета отправлена клиенту на согласование</p>
+          <div class="labels"><span class="label label--amber">Смета на согласовании</span><span class="label label--purple">Трансмиссия</span></div>
+          <div class="car"><span class="plate">А 613 ТТ 77</span><span class="car-meta">112 400 км · 2017</span></div>
+          <div class="progress progress--amber"><span style="width:50%"></span></div>
+          <div class="progress-cap"><span>Ждём ответа клиента</span><b>26 ч</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Виктор Лапин · +7 915 008-77-14</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>08.11, 12:10</span>
+            <span class="foot foot--late"><svg class="ico"><use href="#i-clock"/></svg>просрочено</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>4</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>68 400 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--high" title="Приоритет: высокий"><svg class="ico ico--fill"><use href="#i-prio-high"/></svg></span>
+            <span class="card-key">ЗН-2830</span>
+            <span class="avatar av-2" title="Мастер слесарного цеха: Пётр Сазонов">ПС</span>
+          </div>
+          <h3 class="card-title">Renault Logan II · 1.6 MT</h3>
+          <p class="card-desc">Ремонт ГБЦ после перегрева: опрессовка, шлифовка, замена прокладки</p>
+          <div class="labels"><span class="label label--red">Двигатель</span><span class="label label--amber">Доп. работы</span></div>
+          <div class="car"><span class="plate">Т 405 НС 777</span><span class="car-meta">198 500 км · 2014</span></div>
+          <div class="progress progress--amber"><span style="width:30%"></span></div>
+          <div class="progress-cap"><span>Согласование доп. работ</span><b>1 из 3</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Мурат Джафаров · +7 926 555-19-84</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>09.11, 08:20</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>6</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>42 700 ₽</span>
+          </div>
+        </article>
+
+        <button class="col-add" type="button"><svg class="ico"><use href="#i-plus"/></svg>Добавить заказ-наряд</button>
+      </div>
+    </section>
+      <section class="col">
+      <header class="col-head">
+        <span class="col-dot" style="background:#8b5cf6"></span>
+        <span class="col-name">Заказ запчастей</span>
+        <span class="col-count">3</span>
+        <span class="col-wip">SLA 4 дня</span>
+      </header>
+      <div class="col-body">
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--med" title="Приоритет: средний"><svg class="ico ico--fill"><use href="#i-prio-med"/></svg></span>
+            <span class="card-key">ЗН-2814</span>
+            <span class="avatar av-6" title="Кладовщик: Роман Дьяков">РД</span>
+          </div>
+          <h3 class="card-title">Mazda 6 GH · 2.0 AT</h3>
+          <p class="card-desc">Радиатор, патрубки и термостат — 3 позиции в заказе поставщику</p>
+          <div class="labels"><span class="label label--purple">Ожидание поставки</span><span class="label label--gray">АвтоДеталь</span></div>
+          <div class="car"><span class="plate">Н 780 ХМ 99</span><span class="car-meta">154 200 км · 2012</span></div>
+          <div class="progress progress--purple"><span style="width:55%"></span></div>
+          <div class="progress-cap"><span>Оплачено, ждём отгрузку</span><b>3 позиции</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Кирилл Ярцев · +7 903 447-22-90</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-truck"/></svg>ETA 12.11</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>24 800 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--low" title="Приоритет: низкий"><svg class="ico ico--fill"><use href="#i-prio-low"/></svg></span>
+            <span class="card-key">ЗН-2809</span>
+            <span class="avatar av-6" title="Кладовщик: Роман Дьяков">РД</span>
+          </div>
+          <h3 class="card-title">Volkswagen Tiguan · 2.0 TSI</h3>
+          <p class="card-desc">Задние тормозные диски и колодки, поставка уже в пути</p>
+          <div class="labels"><span class="label label--purple">В пути</span><span class="label label--amber">Тормоза</span></div>
+          <div class="car"><span class="plate">В 219 УК 77</span><span class="car-meta">88 600 км · 2020</span></div>
+          <div class="progress progress--purple"><span style="width:80%"></span></div>
+          <div class="progress-cap"><span>Курьер в городе</span><b>2 позиции</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Елена Шапошникова · +7 916 330-88-45</span></div>
+          <div class="card-foot">
+            <span class="foot foot--ok"><svg class="ico"><use href="#i-truck"/></svg>сегодня, 16:00</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>2</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>16 200 ₽</span>
+          </div>
+        </article>
+
+        <article class="card card--late">
+          <div class="card-top">
+            <span class="prio prio--high" title="Приоритет: высокий"><svg class="ico ico--fill"><use href="#i-prio-high"/></svg></span>
+            <span class="card-key">ЗН-2803</span>
+            <span class="avatar av-6" title="Кладовщик: Роман Дьяков">РД</span>
+          </div>
+          <h3 class="card-title">Nissan X-Trail T31 · 2.0 CVT</h3>
+          <p class="card-desc">Ступичный подшипник передний правый — нет на складе, ищем аналог</p>
+          <div class="labels"><span class="label label--red">Нет на складе</span><span class="label label--amber">Клиент ждёт</span></div>
+          <div class="car"><span class="plate">С 664 ВТ 50</span><span class="car-meta">176 900 км · 2011</span></div>
+          <div class="progress progress--red"><span style="width:20%"></span></div>
+          <div class="progress-cap"><span>Поиск поставщика</span><b>0 из 1</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Андрей Костин · +7 985 771-40-12</span></div>
+          <div class="card-foot">
+            <span class="foot foot--late"><svg class="ico"><use href="#i-alert"/></svg>выдача под угрозой</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>3</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>9 700 ₽</span>
+          </div>
+        </article>
+
+        <button class="col-add" type="button"><svg class="ico"><use href="#i-plus"/></svg>Добавить заказ-наряд</button>
+      </div>
+    </section>
+      <section class="col">
+      <header class="col-head">
+        <span class="col-dot" style="background:#4f46e5"></span>
+        <span class="col-name">Ремонт</span>
+        <span class="col-count">4</span>
+        <span class="col-wip is-over">WIP 4/4</span>
+      </header>
+      <div class="col-body">
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--high" title="Приоритет: высокий"><svg class="ico ico--fill"><use href="#i-prio-high"/></svg></span>
+            <span class="card-key">ЗН-2788</span>
+            <span class="avatar av-2" title="Мастер: Пётр Сазонов">ПС</span>
+          </div>
+          <h3 class="card-title">Kia Sportage 4 · 2.0 AT</h3>
+          <p class="card-desc">Замена ремня ГРМ, роликов и помпы. Запчасти получены и проверены</p>
+          <div class="labels"><span class="label label--blue">Слесарный цех</span><span class="label label--green">Запчасти получены</span></div>
+          <div class="car"><span class="plate">О 507 МР 77</span><span class="car-meta">132 100 км · 2018</span></div>
+          <div class="progress"><span style="width:60%"></span></div>
+          <div class="progress-cap"><span>Этап 3 из 5 · сборка узла</span><b>60%</b></div>
+          <div class="subtasks"><span class="mini is-done"></span><span class="mini is-done"></span><span class="mini is-done"></span><span class="mini"></span><span class="mini"></span><span class="cap">3/5</span></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Татьяна Гордеева · +7 916 508-12-64</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>с 08.11</span>
+            <span class="foot"><svg class="ico"><use href="#i-clock"/></svg>выдача 11.11</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>34 600 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--med" title="Приоритет: средний"><svg class="ico ico--fill"><use href="#i-prio-med"/></svg></span>
+            <span class="card-key">ЗН-2795</span>
+            <span class="avatar av-2" title="Мастер: Пётр Сазонов">ПС</span>
+          </div>
+          <h3 class="card-title">Audi A4 B8 · 1.8 TFSI</h3>
+          <p class="card-desc">Замена маслосъёмных колпачков без снятия ГБЦ, повышенный расход масла</p>
+          <div class="labels"><span class="label label--red">Двигатель</span><span class="label label--blue">Слесарный цех</span></div>
+          <div class="car"><span class="plate">К 118 ОТ 77</span><span class="car-meta">207 400 км · 2011</span></div>
+          <div class="progress"><span style="width:35%"></span></div>
+          <div class="progress-cap"><span>Этап 2 из 4 · разборка</span><b>35%</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Павел Резник · +7 903 201-70-55</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>с 09.11</span>
+            <span class="foot"><svg class="ico"><use href="#i-clock"/></svg>срок 12.11</span>
+            <span class="foot"><svg class="ico"><use href="#i-message"/></svg>2</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>41 900 ₽</span>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--high" title="Приоритет: высокий"><svg class="ico ico--fill"><use href="#i-prio-high"/></svg></span>
+            <span class="card-key">ЗН-2791</span>
+            <span class="avatar av-6" title="Мастер кузовного цеха: Роман Дьяков">РД</span>
+          </div>
+          <h3 class="card-title">Toyota RAV4 XA40 · 2.0 CVT</h3>
+          <p class="card-desc">Кузовной ремонт: задняя дверь, замена бампера, покраска в 2 слоя</p>
+          <div class="labels"><span class="label label--purple">Кузовной цех</span><span class="label label--amber">Покраска</span></div>
+          <div class="car"><span class="plate">В 942 ТС 99</span><span class="car-meta">96 300 км · 2015</span></div>
+          <div class="progress"><span style="width:70%"></span></div>
+          <div class="progress-cap"><span>Этап 4 из 6 · полировка</span><b>70%</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Оксана Литвин · +7 925 117-63-28</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>с 07.11</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>96 200 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--med" title="Приоритет: средний"><svg class="ico ico--fill"><use href="#i-prio-med"/></svg></span>
+            <span class="card-key">ЗН-2782</span>
+            <span class="avatar av-2" title="Мастер: Пётр Сазонов">ПС</span>
+          </div>
+          <h3 class="card-title">ГАЗель Next · 2.8 дизель MT</h3>
+          <p class="card-desc">Замена сцепления и ремонт КПП, коммерческий транспорт, юрлицо</p>
+          <div class="labels"><span class="label label--blue">Слесарный цех</span><span class="label label--gray">Юрлицо</span></div>
+          <div class="car"><span class="plate">А 205 КС 750</span><span class="car-meta">214 800 км · 2019</span></div>
+          <div class="progress"><span style="width:45%"></span></div>
+          <div class="progress-cap"><span>Этап 2 из 5 · снятие КПП</span><b>45%</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>ООО «Логистик Плюс» · водитель Николай</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>с 09.11</span>
+            <span class="foot"><svg class="ico"><use href="#i-clock"/></svg>срок 13.11</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>58 300 ₽</span>
+          </div>
+        </article>
+
+        <button class="col-add" type="button"><svg class="ico"><use href="#i-plus"/></svg>Добавить заказ-наряд</button>
+      </div>
+    </section>
+
+      <section class="col">
+      <header class="col-head">
+        <span class="col-dot" style="background:#f97316"></span>
+        <span class="col-name">Проверка качества</span>
+        <span class="col-count">2</span>
+        <span class="col-wip">ОТК</span>
+      </header>
+      <div class="col-body">
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--med" title="Приоритет: средний"><svg class="ico ico--fill"><use href="#i-prio-med"/></svg></span>
+            <span class="card-key">ЗН-2775</span>
+            <span class="avatar av-4" title="Мастер ОТК: Марина Литвинова">МЛ</span>
+          </div>
+          <h3 class="card-title">Volvo XC60 · 2.4d AT</h3>
+          <p class="card-desc">Замена тормозных дисков и колодок по кругу, тест-драйв и приёмка ОТК</p>
+          <div class="labels"><span class="label label--amber">ОТК</span><span class="label label--teal">Тест-драйв</span></div>
+          <div class="car"><span class="plate">С 308 РР 77</span><span class="car-meta">118 900 км · 2017</span></div>
+          <div class="progress progress--green"><span style="width:90%"></span></div>
+          <div class="progress-cap"><span>Осталось: тест-драйв</span><b>2 из 3</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Максим Тарасов · +7 916 890-44-21</span></div>
+          <div class="card-foot">
+            <span class="foot foot--ok"><svg class="ico"><use href="#i-check-circle"/></svg>2 из 3 проверок</span>
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>с 08.11</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>52 400 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--low" title="Приоритет: низкий"><svg class="ico ico--fill"><use href="#i-prio-low"/></svg></span>
+            <span class="card-key">ЗН-2770</span>
+            <span class="avatar av-4" title="Мастер ОТК: Марина Литвинова">МЛ</span>
+          </div>
+          <h3 class="card-title">Honda CR-V · 2.4 CVT</h3>
+          <p class="card-desc">ТО-90 000 и замена жидкости CVT, контроль регламента и чистоты</p>
+          <div class="labels"><span class="label label--amber">ОТК</span><span class="label label--teal">ТО</span></div>
+          <div class="car"><span class="plate">М 771 КН 199</span><span class="car-meta">93 500 км · 2016</span></div>
+          <div class="progress progress--green"><span style="width:100%"></span></div>
+          <div class="progress-cap"><span>Чек-лист закрыт, ждём ОТК</span><b>18/18</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Галина Мещерякова · +7 985 630-07-88</span></div>
+          <div class="card-foot">
+            <span class="foot foot--ok"><svg class="ico"><use href="#i-check"/></svg>чек-лист 18/18</span>
+            <span class="foot"><svg class="ico"><use href="#i-calendar"/></svg>09.11, 15:40</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>27 100 ₽</span>
+          </div>
+        </article>
+
+        <button class="col-add" type="button"><svg class="ico"><use href="#i-plus"/></svg>Добавить заказ-наряд</button>
+      </div>
+    </section>
+      <section class="col">
+      <header class="col-head">
+        <span class="col-dot" style="background:#12b76a"></span>
+        <span class="col-name">Готово к выдаче</span>
+        <span class="col-count">2</span>
+        <span class="col-wip">2 авто</span>
+      </header>
+      <div class="col-body">
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--med" title="Приоритет: средний"><svg class="ico ico--fill"><use href="#i-prio-med"/></svg></span>
+            <span class="card-key">ЗН-2762</span>
+            <span class="avatar av-1" title="Мастер-приёмщик: Игорь Ковалёв">ИК</span>
+          </div>
+          <h3 class="card-title">Mercedes-Benz E200 · 2.0 AT</h3>
+          <p class="card-desc">Ремонт подвески: передние стойки, рычаги, сход-развал выполнен</p>
+          <div class="labels"><span class="label label--green">Оплачено</span><span class="label label--amber">Выдать сегодня</span></div>
+          <div class="car"><span class="plate">Е 909 ОА 77</span><span class="car-meta">88 100 км · 2019</span></div>
+          <div class="progress progress--green"><span style="width:100%"></span></div>
+          <div class="progress-cap"><span>Авто на площадке выдачи</span><b>100%</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Станислав Юдин · +7 916 402-19-60</span></div>
+          <div class="card-foot">
+            <span class="foot foot--late"><svg class="ico"><use href="#i-clock"/></svg>до 19:00</span>
+            <span class="foot foot--ok"><svg class="ico"><use href="#i-message"/></svg>SMS отправлено</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>74 300 ₽</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <span class="prio prio--low" title="Приоритет: низкий"><svg class="ico ico--fill"><use href="#i-prio-low"/></svg></span>
+            <span class="card-key">ЗН-2758</span>
+            <span class="avatar av-6" title="Мастер кузовного цеха: Роман Дьяков">РД</span>
+          </div>
+          <h3 class="card-title">Volkswagen Polo · 1.6 AT</h3>
+          <p class="card-desc">Замена лобового стекла, установка молдингов, калибровка камеры</p>
+          <div class="labels"><span class="label label--green">Оплачено</span><span class="label label--purple">Кузовной цех</span></div>
+          <div class="car"><span class="plate">Х 335 ВК 77</span><span class="car-meta">64 700 км · 2020</span></div>
+          <div class="progress progress--green"><span style="width:100%"></span></div>
+          <div class="progress-cap"><span>Акт выполненных работ готов</span><b>100%</b></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Вера Антонова · +7 985 244-71-05</span></div>
+          <div class="card-foot">
+            <span class="foot"><svg class="ico"><use href="#i-clock"/></svg>до 18:30</span>
+            <span class="foot foot--ok"><svg class="ico"><use href="#i-check"/></svg>акт готов</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>21 900 ₽</span>
+          </div>
+        </article>
+
+        <button class="col-add" type="button"><svg class="ico"><use href="#i-plus"/></svg>Добавить заказ-наряд</button>
+      </div>
+    </section>
+      <section class="col">
+      <header class="col-head">
+        <span class="col-dot" style="background:#cbd5e1"></span>
+        <span class="col-name">Выдан / закрыт</span>
+        <span class="col-count">2</span>
+      </header>
+      <div class="col-body">
+        <article class="card card--done">
+          <div class="card-top">
+            <span class="prio prio--low" title="Приоритет: низкий"><svg class="ico ico--fill"><use href="#i-prio-low"/></svg></span>
+            <span class="card-key">ЗН-2741</span>
+            <span class="avatar av-1" title="Мастер-приёмщик: Игорь Ковалёв">ИК</span>
+          </div>
+          <h3 class="card-title">Lexus RX350 · 3.5 AT</h3>
+          <p class="card-desc">ТО-120 000: масло, фильтры, свечи, замена жидкости АКПП</p>
+          <div class="labels"><span class="label label--green">Закрыт</span><span class="label label--blue">Гарантия 12 мес</span></div>
+          <div class="car"><span class="plate">Т 118 УХ 77</span><span class="car-meta">121 600 км · 2017</span></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Роман Балашов · +7 916 805-33-72</span></div>
+          <div class="card-foot">
+            <span class="foot foot--ok"><svg class="ico"><use href="#i-check-circle"/></svg>выдан 08.11</span>
+            <span class="foot"><svg class="ico ico--fill"><use href="#i-star"/></svg>5,0</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>28 400 ₽</span>
+          </div>
+        </article>
+
+        <article class="card card--done">
+          <div class="card-top">
+            <span class="prio prio--med" title="Приоритет: средний"><svg class="ico ico--fill"><use href="#i-prio-med"/></svg></span>
+            <span class="card-key">ЗН-2738</span>
+            <span class="avatar av-2" title="Мастер: Пётр Сазонов">ПС</span>
+          </div>
+          <h3 class="card-title">Chevrolet Cruze · 1.8 AT</h3>
+          <p class="card-desc">Замена генератора и ремня навесного оборудования</p>
+          <div class="labels"><span class="label label--gray">Закрыт</span><span class="label label--blue">Гарантия 6 мес</span></div>
+          <div class="car"><span class="plate">Н 460 СМ 50</span><span class="car-meta">187 400 км · 2012</span></div>
+          <div class="client"><svg class="ico"><use href="#i-user"/></svg><span>Илья Дорохов · +7 903 512-66-08</span></div>
+          <div class="card-foot">
+            <span class="foot foot--ok"><svg class="ico"><use href="#i-check-circle"/></svg>выдан 07.11</span>
+            <span class="foot"><svg class="ico ico--fill"><use href="#i-star"/></svg>5,0</span>
+            <span class="foot right"><svg class="ico"><use href="#i-ruble"/></svg>15 700 ₽</span>
+          </div>
+        </article>
+
+        <button class="col-add" type="button"><svg class="ico"><use href="#i-plus"/></svg>Добавить заказ-наряд</button>
+      </div>
+    </section>
+    </div>
+  </div>
+</div>
+</body>
+</html>

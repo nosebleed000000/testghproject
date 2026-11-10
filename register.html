@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="ГаражПро — создание аккаунта сотрудника автосервиса">
+<script src="scripts/theme-boot.js"></script>
+<title>Новый сотрудник — ГаражПро</title>
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/layout.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/modal.css">
+<link rel="stylesheet" href="styles/responsive.css">
+<link rel="stylesheet" href="styles/auth.css">
+</head>
+<body class="auth-page auth-page--register" data-page="register">
+<script src="scripts/icons.js"></script>
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span>
+    <span class="brand-name">ГаражПро</span>
+  </a>
+  <span class="auth-top-label">Команда · Рига</span>
+  <div class="topbar-right">
+    <input type="checkbox" id="theme-toggle" class="theme-input" aria-label="Тёмная тема">
+    <label class="iconbtn theme-btn" for="theme-toggle" title="Переключить светлую / тёмную тему">
+      <svg class="ico ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      <svg class="ico ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+    </label>
+    <a class="btn-light auth-home" href="login.html">
+      <svg class="ico" aria-hidden="true"><use href="#i-arrow-left"/></svg>Ко входу
+    </a>
+  </div>
+</header>
+
+<main class="auth-main">
+  <section class="auth-aside">
+    <div class="auth-aside-content">
+      <span class="status-pill auth-status"><span class="status-dot" style="background:var(--green)"></span>Доступ для команды</span>
+      <h1>Новый сотрудник — за пару минут</h1>
+      <p class="auth-lead">Создайте аккаунт, выдайте роль и пригласите человека в смену. Доступ появится в админ-панели сразу после сохранения.</p>
+
+      <div class="auth-benefits">
+        <div class="auth-benefit">
+          <span class="auth-benefit-icon"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg></span>
+          <div><b>Роли и права</b><span>Каждый видит только свою зону: приёмка, ремонт, склад или управление.</span></div>
+        </div>
+        <div class="auth-benefit">
+          <span class="auth-benefit-icon"><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg></span>
+          <div><b>Приглашение по коду</b><span>Аккаунт создаётся только тем, кому администратор выдал код доступа.</span></div>
+        </div>
+        <div class="auth-benefit">
+          <span class="auth-benefit-icon"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg></span>
+          <div><b>Команда в одном месте</b><span>Состав смены, контакты и статусы — на дашборде администратора.</span></div>
+        </div>
+      </div>
+
+      <div class="auth-live">
+        <div class="auth-live-head"><span class="dot"></span>Команда сервиса</div>
+        <div class="auth-live-stats">
+          <div class="auth-live-stat"><b data-live-employees>6</b><span>сотрудников</span></div>
+          <div class="auth-live-stat"><b>5</b><span>ролей</span></div>
+          <div class="auth-live-stat"><b>21</b><span>заказ-наряд</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="auth-foot">© 2026 ГаражПро · Рига, Латвия</p>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-panel-inner">
+      <div class="auth-card" id="register-card">
+        <div id="register-head">
+          <div class="auth-card-top">
+            <p class="modal-eyebrow">Аккаунты</p>
+            <span class="auth-secure"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg>По приглашению</span>
+          </div>
+          <h2 class="auth-title">Создать аккаунт сотрудника</h2>
+          <p class="auth-sub">Заполните данные, выберите роль и укажите код приглашения. Пароль сотрудник сможет изменить позже.</p>
+        </div>
+
+        <form class="auth-form" id="register-form" novalidate>
+          <div class="form-grid">
+            <div class="field" data-field="firstName">
+              <label class="field-label" for="reg-first-name">Имя <span class="req">*</span></label>
+              <input class="input" id="reg-first-name" name="firstName" type="text" placeholder="Игорь" autocomplete="given-name" required aria-describedby="err-firstName">
+              <p class="field-error" id="err-firstName">Укажите имя</p>
+            </div>
+            <div class="field" data-field="lastName">
+              <label class="field-label" for="reg-last-name">Фамилия <span class="req">*</span></label>
+              <input class="input" id="reg-last-name" name="lastName" type="text" placeholder="Ковалёв" autocomplete="family-name" required aria-describedby="err-lastName">
+              <p class="field-error" id="err-lastName">Укажите фамилию</p>
+            </div>
+            <div class="field" data-field="email">
+              <label class="field-label" for="reg-email">Рабочий e-mail <span class="req">*</span></label>
+              <input class="input" id="reg-email" name="email" type="email" placeholder="igor.kovalev@garazapro.lv" autocomplete="email" required aria-describedby="err-email">
+              <p class="field-error" id="err-email">Введите корректный e-mail</p>
+            </div>
+            <div class="field" data-field="phone">
+              <label class="field-label" for="reg-phone">Телефон <span class="req">*</span></label>
+              <input class="input" id="reg-phone" name="phone" type="tel" placeholder="+371 26 123 456" autocomplete="tel" inputmode="tel" required aria-describedby="err-phone">
+              <p class="field-error" id="err-phone">Введите номер в формате +371 26 123 456</p>
+            </div>
+            <div class="field" data-field="role">
+              <label class="field-label" for="reg-role">Роль <span class="req">*</span></label>
+              <select class="select" id="reg-role" name="role" required aria-describedby="err-role">
+                <option value="master">Мастер-приёмщик</option>
+                <option value="mechanic">Мастер слесарного цеха</option>
+                <option value="diagnost">Диагност</option>
+                <option value="warehouse">Кладовщик</option>
+                <option value="manager">Менеджер</option>
+                <option value="admin">Администратор</option>
+              </select>
+              <p class="field-error" id="err-role">Выберите роль</p>
+            </div>
+            <div class="field" data-field="invite">
+              <label class="field-label" for="reg-invite">Код приглашения <span class="req">*</span></label>
+              <input class="input" id="reg-invite" name="invite" type="text" placeholder="GARAGE-2026" autocomplete="off" spellcheck="false" required aria-describedby="err-invite">
+              <p class="auth-invite-hint">Демо-код: <b>GARAGE-2026</b></p>
+              <p class="field-error" id="err-invite">Неверный код приглашения</p>
+            </div>
+            <div class="field" data-field="password">
+              <label class="field-label" for="reg-password">Пароль <span class="req">*</span></label>
+              <div class="input-wrap">
+                <input class="input" id="reg-password" name="password" type="password" placeholder="Не менее 8 символов" autocomplete="new-password" required aria-describedby="err-password">
+                <button class="input-action" type="button" data-password-toggle="reg-password" aria-label="Показать пароль">
+                  <svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>
+                </button>
+              </div>
+              <div class="pw-meter" id="pw-meter" data-score="0" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+              <p class="pw-hint" id="pw-hint">Минимум 8 символов, заглавные буквы и цифры</p>
+              <p class="field-error" id="err-password">Пароль слишком простой</p>
+            </div>
+            <div class="field" data-field="confirm">
+              <label class="field-label" for="reg-confirm">Повторите пароль <span class="req">*</span></label>
+              <div class="input-wrap">
+                <input class="input" id="reg-confirm" name="confirm" type="password" placeholder="Ещё раз" autocomplete="new-password" required aria-describedby="err-confirm">
+                <button class="input-action" type="button" data-password-toggle="reg-confirm" aria-label="Показать пароль">
+                  <svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>
+                </button>
+              </div>
+              <p class="field-error" id="err-confirm">Пароли не совпадают</p>
+            </div>
+            <div class="field field--full" data-field="terms">
+              <label class="auth-check auth-terms"><input type="checkbox" id="reg-terms"><span>Согласен с <a href="#" data-demo-link>правилами доступа</a> и обработкой персональных данных</span></label>
+              <p class="field-error" id="err-terms">Подтвердите согласие</p>
+            </div>
+          </div>
+
+          <button class="btn-primary auth-submit" type="submit">
+            <svg class="ico" aria-hidden="true"><use href="#i-user-plus"/></svg>
+            <span>Создать аккаунт</span>
+          </button>
+        </form>
+
+        <div class="auth-success" id="register-success" hidden>
+          <span class="auth-success-icon"><svg class="ico" aria-hidden="true"><use href="#i-check-circle"/></svg></span>
+          <p class="modal-eyebrow">Готово</p>
+          <h2>Аккаунт создан</h2>
+          <p id="success-text">Сотрудник добавлен в команду.</p>
+          <div class="auth-success-card">
+            <span class="avatar av-1" id="success-avatar">ИК</span>
+            <div class="auth-success-text"><b id="success-name">Сотрудник</b><span id="success-role">Мастер-приёмщик · email</span></div>
+          </div>
+          <div class="auth-success-actions">
+            <a class="btn-primary" id="success-action" href="admin.html">В дашборд</a>
+            <button class="btn-light" type="button" id="create-another">Создать ещё</button>
+          </div>
+        </div>
+
+        <p class="auth-switch" id="register-switch">Уже есть аккаунт? <a href="login.html">Вернуться на вход</a></p>
+      </div>
+      <p class="auth-legal">Аккаунт появится в команде админ-панели. Для демо используйте код приглашения <b>GARAGE-2026</b>.</p>
+    </div>
+  </section>
+</main>
+
+<div class="toast-region" id="toast-region" popover="manual" aria-live="polite" aria-atomic="false"></div>
+<script src="scripts/data.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/employees.js"></script>
+<script src="scripts/auth.js"></script>
+</body>
+</html>

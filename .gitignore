@@ -1,0 +1,11 @@
+# Local test artifacts
+.shots/
+
+# Nested reference repo kept outside this repository
+template/.git/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

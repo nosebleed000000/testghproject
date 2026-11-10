@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="ГаражПро — админ-панель автосервиса">
+<script src="scripts/theme-boot.js"></script>
+<title>Админ-панель — ГаражПро</title>
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/layout.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/modal.css">
+<link rel="stylesheet" href="styles/responsive.css">
+<link rel="stylesheet" href="styles/admin.css">
+</head>
+<body class="admin-page">
+<script src="scripts/icons.js"></script>
+
+<header class="topbar">
+  <button class="iconbtn admin-menu-btn" type="button" id="admin-menu-btn" aria-label="Открыть меню" aria-expanded="false" aria-controls="admin-side">
+    <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+    <span class="brand-mark"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span>
+    <span class="brand-name">ГаражПро</span>
+  </a>
+  <span class="admin-top-label">Админ-панель</span>
+  <div class="topbar-right">
+    <label class="topsearch">
+      <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="search" id="global-search" placeholder="Поиск по заказам и команде" aria-label="Поиск по заказам и команде" autocomplete="off">
+    </label>
+    <input type="checkbox" id="theme-toggle" class="theme-input" aria-label="Тёмная тема">
+    <label class="iconbtn theme-btn" for="theme-toggle" title="Переключить светлую / тёмную тему">
+      <svg class="ico ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      <svg class="ico ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+    </label>
+    <button class="iconbtn" type="button" id="admin-bell" aria-label="Уведомления"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg></button>
+    <a class="avatar av-9" id="admin-avatar" href="admin.html" title="Администратор: Сергей Ильин">СИ</a>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <aside class="admin-side" id="admin-side">
+    <div class="admin-side-head">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span>
+        <span class="brand-name">ГаражПро</span>
+      </a>
+      <button class="iconbtn side-close" type="button" id="admin-close" aria-label="Закрыть меню">
+        <svg class="ico" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+    </div>
+
+    <p class="admin-side-label">Управление</p>
+    <nav class="admin-nav" aria-label="Админ-навигация">
+      <a class="admin-nav-link is-active" href="admin.html"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg>Дашборд</a>
+      <a class="admin-nav-link" href="index.html"><svg class="ico" aria-hidden="true"><use href="#i-board"/></svg>Заказ-наряды<span class="admin-nav-count" id="nav-orders-count">21</span></a>
+      <a class="admin-nav-link" href="#team"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>Сотрудники<span class="admin-nav-count" id="nav-employees-count">6</span></a>
+      <a class="admin-nav-link" href="#" data-demo><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg>Клиенты</a>
+      <a class="admin-nav-link" href="#" data-demo><svg class="ico" aria-hidden="true"><use href="#i-package"/></svg>Склад<span class="admin-nav-count">7</span></a>
+      <a class="admin-nav-link" href="#" data-demo><svg class="ico" aria-hidden="true"><use href="#i-trend-up"/></svg>Отчёты</a>
+    </nav>
+
+    <div class="admin-side-sep"></div>
+    <p class="admin-side-label">Система</p>
+    <nav class="admin-nav" aria-label="Системные разделы">
+      <a class="admin-nav-link" href="register.html"><svg class="ico" aria-hidden="true"><use href="#i-user-plus"/></svg>Новый сотрудник</a>
+      <a class="admin-nav-link" href="#" data-demo><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg>Настройки</a>
+    </nav>
+
+    <div class="admin-side-bottom">
+      <div class="admin-shift"><span class="dot"></span>Смена идёт · до 20:00</div>
+      <div class="admin-user">
+        <span class="avatar av-9" id="side-avatar">СИ</span>
+        <div class="admin-user-text"><b id="side-name">Сергей Ильин</b><span id="side-role">Администратор</span></div>
+        <a class="admin-user-logout" href="login.html" id="logout-btn" title="Выйти из аккаунта" aria-label="Выйти из аккаунта">
+          <svg class="ico" aria-hidden="true"><use href="#i-log-out"/></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+  <div class="admin-overlay" id="admin-overlay" hidden></div>
+
+  <main class="admin-main">
+    <div class="admin-content">
+      <header class="admin-head">
+        <div>
+          <p class="admin-eyebrow">Админ-панель · Рига</p>
+          <h1 class="admin-title" id="admin-greeting">Добрый день, Сергей</h1>
+          <p class="admin-sub" id="admin-date">Показатели сервис-центра на сегодня</p>
+        </div>
+        <div class="admin-actions">
+          <a class="btn-light" href="register.html">
+            <svg class="ico" aria-hidden="true"><use href="#i-user-plus"/></svg>Создать сотрудника
+          </a>
+          <a class="btn-primary" href="index.html#/new">
+            <svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg>Создать заказ-наряд
+          </a>
+        </div>
+      </header>
+
+      <section class="stat-grid" aria-label="Ключевые показатели">
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Всего заказ-нарядов</span>
+            <span class="stat-icon"><svg class="ico" aria-hidden="true"><use href="#i-board"/></svg></span>
+          </div>
+          <p class="stat-value" id="stat-orders">—</p>
+          <p class="stat-foot" id="stat-orders-foot">На доске сервиса</p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">В работе</span>
+            <span class="stat-icon stat-icon--amber"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span>
+          </div>
+          <p class="stat-value" id="stat-active">—</p>
+          <p class="stat-foot" id="stat-active-foot">На разных этапах</p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Просрочено</span>
+            <span class="stat-icon stat-icon--red"><svg class="ico" aria-hidden="true"><use href="#i-alert"/></svg></span>
+          </div>
+          <p class="stat-value" id="stat-late">—</p>
+          <p class="stat-foot" id="stat-late-foot">Требуют внимания</p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top">
+            <span class="stat-label">Сумма по заказам</span>
+            <span class="stat-icon stat-icon--green"><svg class="ico" aria-hidden="true"><use href="#i-euro"/></svg></span>
+          </div>
+          <p class="stat-value" id="stat-revenue">—</p>
+          <p class="stat-foot" id="stat-revenue-foot">По текущим работам</p>
+        </article>
+      </section>
+
+      <div class="dash-grid">
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div><h2 class="dash-card-title">Загрузка по этапам</h2><p class="dash-card-sub">Сколько заказ-нарядов на каждом шаге</p></div>
+            <a class="dash-card-link" href="index.html">Открыть доску</a>
+          </header>
+          <div class="dash-card-body">
+            <div class="stage-chart" id="stage-chart"></div>
+          </div>
+        </section>
+
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div><h2 class="dash-card-title">Требуют внимания</h2><p class="dash-card-sub">Просроченные заказ-наряды</p></div>
+            <span class="label label--red" id="overdue-count">0</span>
+          </header>
+          <div class="issue-list" id="overdue-list"></div>
+        </section>
+      </div>
+
+      <div class="dash-grid">
+        <section class="dash-card">
+          <header class="dash-card-head">
+            <div><h2 class="dash-card-title">Последние заказ-наряды</h2><p class="dash-card-sub">Свежие записи на доске</p></div>
+            <a class="dash-card-link" href="index.html">Все заказы</a>
+          </header>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>№</th><th>Автомобиль</th><th>Клиент</th><th>Этап</th><th class="num">Сумма</th></tr>
+              </thead>
+              <tbody id="recent-orders-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dash-card" id="team">
+          <header class="dash-card-head">
+            <div><h2 class="dash-card-title">Команда</h2><p class="dash-card-sub">Сотрудники и доступы</p></div>
+            <a class="dash-card-link" href="register.html">Создать</a>
+          </header>
+          <div class="team-list" id="team-list"></div>
+          <div class="team-footer">
+            <a class="btn-light" href="register.html"><svg class="ico" aria-hidden="true"><use href="#i-user-plus"/></svg>Создать аккаунт сотрудника</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast-region" id="toast-region" popover="manual" aria-live="polite" aria-atomic="false"></div>
+<script src="scripts/data.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/store.js"></script>
+<script src="scripts/employees.js"></script>
+<script src="scripts/dashboard.js"></script>
+</body>
+</html>

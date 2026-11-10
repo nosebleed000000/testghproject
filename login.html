@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="ГаражПро — вход в систему для сотрудников автосервиса">
+<script src="scripts/theme-boot.js"></script>
+<title>Вход — ГаражПро</title>
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/layout.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/modal.css">
+<link rel="stylesheet" href="styles/responsive.css">
+<link rel="stylesheet" href="styles/auth.css">
+</head>
+<body class="auth-page" data-page="login">
+<script src="scripts/icons.js"></script>
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span>
+    <span class="brand-name">ГаражПро</span>
+  </a>
+  <span class="auth-top-label">Сервис-центр «Рига»</span>
+  <div class="topbar-right">
+    <input type="checkbox" id="theme-toggle" class="theme-input" aria-label="Тёмная тема">
+    <label class="iconbtn theme-btn" for="theme-toggle" title="Переключить светлую / тёмную тему">
+      <svg class="ico ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      <svg class="ico ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+    </label>
+    <a class="btn-light auth-home" href="index.html">
+      <svg class="ico" aria-hidden="true"><use href="#i-arrow-left"/></svg>На главную
+    </a>
+  </div>
+</header>
+
+<main class="auth-main">
+  <section class="auth-aside">
+    <div class="auth-aside-content">
+      <span class="status-pill auth-status"><span class="status-dot" style="background:var(--green)"></span>Смена идёт · до 20:00</span>
+      <h1>Сервис под контролем — от заявки до выдачи</h1>
+      <p class="auth-lead">Заказ-наряды, загрузка мастеров, склад и статусы автомобилей — в одном рабочем окне сервис-центра «Рига».</p>
+
+      <div class="auth-benefits">
+        <div class="auth-benefit">
+          <span class="auth-benefit-icon"><svg class="ico" aria-hidden="true"><use href="#i-board"/></svg></span>
+          <div><b>Все заказ-наряды на одной доске</b><span>От новой заявки до выдачи автомобиля — без потерянных записей.</span></div>
+        </div>
+        <div class="auth-benefit">
+          <span class="auth-benefit-icon"><svg class="ico" aria-hidden="true"><use href="#i-package"/></svg></span>
+          <div><b>Запчасти и склад под рукой</b><span>Видно, что заказано, что в пути и что уже ждёт на полке.</span></div>
+        </div>
+        <div class="auth-benefit">
+          <span class="auth-benefit-icon"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg></span>
+          <div><b>Роли и доступы для команды</b><span>Администратор, приёмщик, мастер и кладовщик работают в своих зонах.</span></div>
+        </div>
+      </div>
+
+      <div class="auth-live">
+        <div class="auth-live-head"><span class="dot"></span>Сейчас в работе</div>
+        <div class="auth-live-stats">
+          <div class="auth-live-stat"><b>21</b><span>заказ-наряд</span></div>
+          <div class="auth-live-stat"><b>3</b><span>просрочено</span></div>
+          <div class="auth-live-stat"><b data-live-employees>6</b><span>сотрудников</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="auth-foot">© 2026 ГаражПро · Рига, Латвия</p>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-panel-inner">
+      <div class="auth-card">
+        <div class="auth-card-top">
+          <p class="modal-eyebrow">Личный кабинет</p>
+          <span class="auth-secure"><svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg>Защищённый вход</span>
+        </div>
+        <h2 class="auth-title">Вход в систему</h2>
+        <p class="auth-sub">Введите рабочий e-mail и пароль, чтобы открыть смену.</p>
+
+        <form class="auth-form" id="login-form" novalidate>
+          <div class="field" data-field="email">
+            <label class="field-label" for="login-email">Рабочий e-mail <span class="req">*</span></label>
+            <input class="input" id="login-email" name="email" type="email" placeholder="admin@garazapro.lv" autocomplete="username" required aria-describedby="err-login-email">
+            <p class="field-error" id="err-login-email">Введите корректный e-mail</p>
+          </div>
+
+          <div class="field" data-field="password">
+            <label class="field-label" for="login-password">Пароль <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input class="input" id="login-password" name="password" type="password" placeholder="Не менее 6 символов" autocomplete="current-password" required aria-describedby="err-login-password">
+              <button class="input-action" type="button" data-password-toggle="login-password" aria-label="Показать пароль">
+                <svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>
+              </button>
+            </div>
+            <p class="field-error" id="err-login-password">Введите пароль</p>
+          </div>
+
+          <div class="auth-row">
+            <label class="auth-check"><input type="checkbox" id="login-remember" checked><span>Запомнить меня</span></label>
+            <button class="auth-link" type="button" id="forgot-password">Забыли пароль?</button>
+          </div>
+
+          <div class="auth-alert" id="login-alert" hidden>
+            <svg class="ico" aria-hidden="true"><use href="#i-alert"/></svg>
+            <span id="login-alert-text">Аккаунт не найден.</span>
+          </div>
+
+          <button class="btn-primary auth-submit" type="submit" id="login-submit">
+            <span>Войти</span>
+            <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+          </button>
+
+          <div class="auth-demo">
+            <span class="auth-demo-icon"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg></span>
+            <div class="auth-demo-text"><b>Демо-доступ</b><span>admin@garazapro.lv · admin123</span></div>
+            <button class="auth-link" type="button" id="fill-demo">Подставить</button>
+          </div>
+        </form>
+
+        <p class="auth-switch">Нет аккаунта? <a href="register.html">Создать аккаунт сотрудника</a></p>
+      </div>
+      <p class="auth-legal">Доступ только для сотрудников сервиса. Если вы забыли данные — обратитесь к администратору смены.</p>
+    </div>
+  </section>
+</main>
+
+<div class="toast-region" id="toast-region" popover="manual" aria-live="polite" aria-atomic="false"></div>
+<script src="scripts/data.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/employees.js"></script>
+<script src="scripts/auth.js"></script>
+</body>
+</html>
